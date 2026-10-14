@@ -16,15 +16,69 @@ same options.
 
 ## Installation
 
-Run it from the source directory without installing:
+### Run from the source directory
+
+No installation is needed to try it out:
 
 ```
 bin/videdit --help
 bin/videdit-gui
 ```
 
-Or install it into a virtual environment, which provides the commands
-`videdit` and `videdit-gui`:
+### Install for a user
+
+Install it into its own virtual environment and link the commands into
+`~/.local/bin`. Replace `/path/to/videdit` with the directory of this
+repository.
+
+```
+sudo apt install ffmpeg python3-venv
+python3 -m venv ~/.local/share/videdit
+~/.local/share/videdit/bin/pip install "/path/to/videdit[gui]"
+ln -s ~/.local/share/videdit/bin/videdit ~/.local/bin/
+ln -s ~/.local/share/videdit/bin/videdit-gui ~/.local/bin/
+```
+
+`[gui]` also installs PySide6 (about 250 MB); leave it out for the command line
+only. On Ubuntu, `~/.local/bin` is on the `PATH` after the next login if the
+directory exists.
+
+To get videdit into the application menu and under "Open with" for videos,
+save this as `~/.local/share/applications/videdit.desktop`, with your home
+directory in `Exec`:
+
+```
+[Desktop Entry]
+Type=Application
+Name=videdit
+Comment=Convert camera videos
+Exec=/home/USER/.local/bin/videdit-gui %F
+Icon=video-x-generic
+Terminal=false
+Categories=AudioVideo;Video;
+MimeType=video/mp4;video/quicktime;video/mp2t;
+```
+
+- **Update:** run the `pip install` again with `--upgrade`.
+- **Remove:** delete `~/.local/share/videdit`, the two links in `~/.local/bin`
+  and the `.desktop` file. The settings are in `~/.config/videdit/`.
+
+### Other ways to install
+
+- **pipx** creates the environment and the links in one step:
+  `sudo apt install pipx`, then `pipx install "/path/to/videdit[gui]"`.
+- **Ubuntu packages instead of pip downloads:** install
+  `python3-pyside6.qtwidgets` and `python3-exifread` with apt, create the
+  environment with `python3 -m venv --system-site-packages`, and install
+  without `[gui]`. The environment must use the system `python3`, which the
+  apt packages are built for.
+- **For all users:** create the environment in `/opt/videdit` and put the
+  links into `/usr/local/bin`.
+
+### Development setup
+
+An editable install runs the code of the repository directly, so changes take
+effect without reinstalling:
 
 ```
 python3 -m venv .venv
